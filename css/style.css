@@ -681,3 +681,51 @@ body.dark .nav-links button{
   color:#ffffff;
   border-bottom:1px solid #333;
 }
+
+/* MOBILE NAV MENU TEXT ONLY */
+
+@media (max-width:768px){
+
+  .nav-links{
+    display:none;
+    flex-direction:column;
+    position:absolute;
+    top:70px;
+    left:0;
+    width:100%;
+    background:#ffffff;
+    padding:15px;
+    z-index:1000;
+  }
+
+  .nav-links.active{
+    display:flex;
+  }
+
+  /* hide emoji icons */
+  .nav-links .icon{
+    display:none;
+  }
+
+  /* show text nicely */
+  .nav-links a,
+  .nav-links button{
+    font-size:18px;
+    padding:12px 0;
+    color:#222;
+    border-bottom:1px solid #eee;
+  }
+
+}
+
+/* DARK MODE MOBILE MENU */
+
+body.dark .nav-links{
+  background:#1f1f1f;
+}
+
+body.dark .nav-links a,
+body.dark .nav-links button{
+  color:#ffffff;
+  border-bottom:1px solid #333;
+}
