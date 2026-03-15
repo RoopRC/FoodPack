@@ -568,40 +568,7 @@ input, select, textarea { font-family: inherit; }
   .toast-container { bottom: 16px; right: 16px; left: 16px; }
 }
 
-/* MOBILE NAVBAR FIX */
 
-@media (max-width: 768px) {
-
-  .navbar .container{
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .nav-search{
-    width: 100%;
-  }
-
-  .nav-search input{
-    width: 100%;
-  }
-
-  .nav-links{
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .nav-link span{
-    display: none;
-  }
-
-  .cart-btn span:nth-child(2){
-    display: none;
-  }
-
-}
 
 /* ── MENU PAGE SPECIFICS ────────────────────────────────────── */
 .menu-hero { background: linear-gradient(135deg,#282c3f,#1a1a2e); padding: 48px 0; }
@@ -618,3 +585,44 @@ input, select, textarea { font-family: inherit; }
 .no-results-icon  { font-size:60px; margin-bottom:16px; }
 .no-results-title { font-size:20px; font-weight:700; margin-bottom:8px; }
 .no-results-sub   { color:var(--text-muted); }
+
+
+/* ---------- NAVBAR LAYOUT FIX ---------- */
+
+.navbar .container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ---------- MOBILE NAVBAR FIX ---------- */
+
+@media (max-width: 768px){
+
+  .navbar .container{
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo{
+    font-size: 22px;
+  }
+
+  .nav-links{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-links span{
+    display: none;   /* hide text and keep icons */
+  }
+
+  .dark-mode-toggle{
+    display: flex;
+    align-items: center;
+  }
+
+}
