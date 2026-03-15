@@ -568,6 +568,41 @@ input, select, textarea { font-family: inherit; }
   .toast-container { bottom: 16px; right: 16px; left: 16px; }
 }
 
+/* MOBILE NAVBAR FIX */
+
+@media (max-width: 768px) {
+
+  .navbar .container{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .nav-search{
+    width: 100%;
+  }
+
+  .nav-search input{
+    width: 100%;
+  }
+
+  .nav-links{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .nav-link span{
+    display: none;
+  }
+
+  .cart-btn span:nth-child(2){
+    display: none;
+  }
+
+}
+
 /* ── MENU PAGE SPECIFICS ────────────────────────────────────── */
 .menu-hero { background: linear-gradient(135deg,#282c3f,#1a1a2e); padding: 48px 0; }
 .menu-hero-title { font-family: var(--font-display); font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 20px; }
