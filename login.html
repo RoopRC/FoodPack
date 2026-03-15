@@ -44,7 +44,7 @@
 
     <div id="toast-container" class="toast-container"></div>
 
-    <!-- Minimal Nav -->
+    <!-- Minimal Nav
     <nav class="navbar">
         <div class="container">
             <a href="index.html" class="nav-logo">
@@ -57,7 +57,42 @@
                 <button class="dark-toggle">🌙</button>
             </div>
         </div>
-    </nav>
+    </nav> -->
+
+    <!-- ── NAVBAR ────────────────────────────────────────────────── -->
+<nav class="navbar">
+    <div class="container">
+
+        <a href="index.html" class="nav-logo">
+            <span class="nav-logo-icon">🍽️</span>
+            <span class="nav-logo-text">FoodPack</span>
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button class="menu-toggle" id="menuToggle">⋮</button>
+
+        <div class="nav-search">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="nav-search-input" placeholder="Search for food, restaurants…" autocomplete="off">
+        </div>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html" class="nav-link active"><span class="icon">🏠</span><span>Home</span></a>
+            <a href="menu.html" class="nav-link"><span class="icon">🍴</span><span>Menu</span></a>
+            <a href="profile.html" class="nav-link"><span class="icon">👤</span><span>Profile</span></a>
+            <a href="login.html" class="nav-link"><span class="icon">🔑</span><span>Login</span></a>
+
+            <button class="dark-toggle" title="Toggle dark mode">🌙</button>
+
+            <a href="cart.html" class="cart-btn">
+                <span>🛒</span>
+                <span>Cart</span>
+                <span class="cart-badge" style="display:none">0</span>
+            </a>
+        </div>
+
+    </div>
+</nav>
 
     <main class="auth-page">
         <div class="auth-card">

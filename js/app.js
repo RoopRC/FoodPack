@@ -358,3 +358,10 @@ const App = {
 
 /* ── Bootstrap ───────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => App.init());
+
+const menuToggle = document.getElementById("menuToggle");
+const navLinks = document.getElementById("navLinks");
+
+menuToggle.addEventListener("click", function(){
+    navLinks.classList.toggle("active");
+});
