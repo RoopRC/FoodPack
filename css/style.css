@@ -766,3 +766,8 @@ body.dark .nav-links button{
   color:#fff;
   border-bottom:1px solid #333;
 }
+
+.nav-link.active{
+  color: #ff9900;
+  font-weight: 600;
+}

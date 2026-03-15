@@ -359,9 +359,29 @@ const App = {
 /* ── Bootstrap ───────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => App.init());
 
-const menuToggle = document.getElementById("menuToggle");
-const navLinks = document.getElementById("navLinks");
+// const menuToggle = document.getElementById("menuToggle");
+// const navLinks = document.getElementById("navLinks");
 
-menuToggle.addEventListener("click", function(){
-    navLinks.classList.toggle("active");
+// menuToggle.addEventListener("click", function(){
+//     navLinks.classList.toggle("active");
+// });
+
+
+
+// const menuToggle = document.getElementById("menuToggle");
+// const navLinks = document.getElementById("navLinks");
+
+// menuToggle.addEventListener("click", () => {
+//   navLinks.classList.toggle("active");
+// });
+
+const currentPage = window.location.pathname.split("/").pop();
+const navLinks = document.querySelectorAll(".nav-link");
+
+navLinks.forEach(link => {
+  const linkPage = link.getAttribute("href");
+
+  if (linkPage === currentPage) {
+    link.classList.add("active");
+  }
 });
