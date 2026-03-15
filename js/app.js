@@ -368,12 +368,14 @@ document.addEventListener('DOMContentLoaded', () => App.init());
 
 
 
-const menuToggle = document.getElementById("menuToggle");
-const navLinks = document.getElementById("navLinks");
+// const menuToggle = document.getElementById("menuToggle");
+// const navLinks = document.getElementById("navLinks");
 
-menuToggle.addEventListener("click", () => {
-  navLinks.classList.toggle("active");
-});
+// menuToggle.addEventListener("click", () => {
+//   navLinks.classList.toggle("active");
+// });
+
+
 
 // const currentPage = window.location.pathname.split("/").pop();
 // const navLinks = document.querySelectorAll(".nav-link");
@@ -385,3 +387,24 @@ menuToggle.addEventListener("click", () => {
 //     link.classList.add("active");
 //   }
 // });
+
+// Mobile menu toggle
+const menuToggle = document.getElementById("menuToggle");
+const navLinksContainer = document.getElementById("navLinks");
+
+menuToggle.addEventListener("click", () => {
+  navLinksContainer.classList.toggle("active");
+});
+
+
+// Active page highlight
+const currentPage = window.location.pathname.split("/").pop();
+const navLinks = document.querySelectorAll(".nav-link");
+
+navLinks.forEach(link => {
+  const linkPage = link.getAttribute("href");
+
+  if (linkPage === currentPage) {
+    link.classList.add("active");
+  }
+});
