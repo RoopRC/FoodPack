@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — FoodByYupp</title>
+    <meta name="description" content="Complete your order. Enter delivery address and choose payment method.">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .confirm-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .7);
+            z-index: 4000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px
+        }
+
+        .confirm-box {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            padding: 48px 40px;
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+            animation: slideUp .4s cubic-bezier(.34, 1.56, .64, 1)
+        }
+
+        .confirm-icon {
+            font-size: 72px;
+            display: block;
+            margin-bottom: 20px;
+            animation: bounce 1s ease
+        }
+
+        .confirm-title {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--accent)
+        }
+
+        .confirm-sub {
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-size: 15px
+        }
+
+        .confirm-id {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 28px
+        }
+
+        .tracking-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm)
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-logo">
+                <span class="nav-logo-icon">🍽️</span>
+                <span class="nav-logo-text">FoodByYupp</span>
+            </a>
+            <div style="flex:1"></div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link"><span class="icon">🏠</span><span>Home</span></a>
+                <a href="cart.html" class="nav-link"><span class="icon">🛒</span><span>Cart</span><span
+                        class="cart-badge" style="display:none">0</span></a>
+                <button class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE -->
+    <main class="page-wrap">
+        <div class="container">
+            <h1 class="page-title">📦 Checkout</h1>
+            <div class="checkout-layout">
+                <!-- LEFT -->
+                <div>
+                    <!-- Delivery Address -->
+                    <div class="form-card">
+                        <div class="form-card-title">📍 Delivery Address</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label class="form-label">Full Name</label><input class="form-input"
+                                    id="fname" type="text" placeholder="John Doe"></div>
+                            <div class="form-group"><label class="form-label">Phone Number</label><input
+                                    class="form-input" id="phone" type="tel" placeholder="+91 98765 43210"></div>
+                            <div class="form-group full"><label class="form-label">Address Line 1</label><input
+                                    class="form-input" id="addr1" type="text"
+                                    placeholder="House / Flat No., Building Name"></div>
+                            <div class="form-group full"><label class="form-label">Address Line 2</label><input
+                                    class="form-input" id="addr2" type="text" placeholder="Street, Locality (optional)">
+                            </div>
+                            <div class="form-group"><label class="form-label">City</label><input class="form-input"
+                                    id="city" type="text" placeholder="Mumbai"></div>
+                            <div class="form-group"><label class="form-label">PIN Code</label><input class="form-input"
+                                    id="pin" type="text" placeholder="400001" maxlength="6"></div>
+                            <div class="form-group"><label class="form-label">State</label>
+                                <select class="form-input" id="state">
+                                    <option value="">Select State</option>
+                                    <option>Maharashtra</option>
+                                    <option>Delhi</option>
+                                    <option>Karnataka</option>
+                                    <option>Tamil Nadu</option>
+                                    <option>Telangana</option>
+                                    <option>Gujarat</option>
+                                    <option>Rajasthan</option>
+                                    <option>West Bengal</option>
+                                    <option>Uttar Pradesh</option>
+                                    <option>Kerala</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label class="form-label">Delivery Instructions</label><input
+                                    class="form-input" id="note" type="text"
+                                    placeholder="Call when nearby, leave at door…"></div>
+                        </div>
+                    </div>
+
+                    <!-- Payment -->
+                    <div class="form-card">
+                        <div class="form-card-title">💳 Payment Method</div>
+                        <div class="payment-options" id="payment-options">
+                            <div class="pay-option selected" data-method="upi" onclick="selectPay(this)">
+                                <div class="pay-icon">📱</div>
+                                <div class="pay-label">UPI</div>
+                            </div>
+                            <div class="pay-option" data-method="card" onclick="selectPay(this)">
+                                <div class="pay-icon">💳</div>
+                                <div class="pay-label">Card</div>
+                            </div>
+                            <div class="pay-option" data-method="netbanking" onclick="selectPay(this)">
+                                <div class="pay-icon">🏦</div>
+                                <div class="pay-label">Net Banking</div>
+                            </div>
+                            <div class="pay-option" data-method="cod" onclick="selectPay(this)">
+                                <div class="pay-icon">💵</div>
+                                <div class="pay-label">Cash on Delivery</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT -->
+                <div>
+                    <div class="order-summary" id="order-summary">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/data.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        let selectedMethod = 'upi';
+
+        function selectPay(el) {
+            document.querySelectorAll('.pay-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedMethod = el.dataset.method;
+        }
+
+        function fmt(n) { return '₹' + n.toLocaleString('en-IN'); }
+
+        function renderSummary() {
+            const items = Cart.getAll();
+            const total = Cart.total(null);
+            const del = Cart.delivery();
+            document.getElementById('order-summary').innerHTML = `
+    <div class="summary-title">🧾 Order Summary</div>
+    ${items.length === 0 ? '<p style="color:var(--text-muted);font-size:14px">No items in cart.</p>' : ''}
+    ${items.map(i => `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+        <span>${i.name} × ${i.qty}</span>
+        <span style="font-weight:600">${fmt(i.price * i.qty)}</span>
+      </div>`).join('')}
+    <div class="summary-row" style="margin-top:12px"><span>Subtotal</span><span>${fmt(Cart.subtotal())}</span></div>
+    <div class="summary-row"><span>Delivery</span><span>${del === 0 ? '<span style="color:var(--accent)">FREE</span>' : fmt(del)}</span></div>
+    <div class="summary-row"><span>GST (5%)</span><span>${fmt(Cart.tax())}</span></div>
+    <div class="summary-row total"><span>Total</span><span style="color:var(--primary)">${fmt(total)}</span></div>
+    <button class="checkout-btn" id="place-order-btn" onclick="placeOrder()" ${items.length === 0 ? 'disabled' : ''}>
+      🚀 Place Order · ${fmt(total)}
+    </button>`;
+        }
+
+        function placeOrder() {
+            const fname = document.getElementById('fname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const addr1 = document.getElementById('addr1').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const pin = document.getElementById('pin').value.trim();
+            if (!fname || !phone || !addr1 || !city || !pin) {
+                Toast.show('Please fill all required address fields', 'error'); return;
+            }
+            if (!/^\d{6}$/.test(pin)) { Toast.show('Enter a valid 6-digit PIN code', 'error'); return; }
+
+            const orderId = 'FBY' + Date.now().toString().slice(-8);
+            const orderData = {
+                id: orderId,
+                date: new Date().toLocaleString('en-IN'),
+                items: Cart.getAll(),
+                total: Cart.total(null),
+                address: `${fname}, ${addr1}, ${city} - ${pin}`,
+                payment: selectedMethod,
+                status: 'Delivered'
+            };
+            Cart.saveOrder(orderData);
+            Cart.clear();
+            showConfirmation(orderId);
+        }
+
+        function showConfirmation(orderId) {
+            const overlay = document.createElement('div');
+            overlay.className = 'confirm-overlay';
+            overlay.innerHTML = `
+    <div class="confirm-box">
+      <span class="confirm-icon">🎉</span>
+      <div class="confirm-title">Order Placed Successfully!</div>
+      <div class="confirm-sub">Your delicious food is being prepared.</div>
+      <div class="confirm-id">Order ID: <strong>${orderId}</strong></div>
+      <div class="tracking-card">
+        <div style="font-weight:700;margin-bottom:16px;font-size:15px">🚚 Order Tracking</div>
+        <div class="tracking-steps">
+          <div class="step done"><div class="step-dot">✓</div><div class="step-label">Order Placed</div></div>
+          <div class="step active"><div class="step-dot">🍳</div><div class="step-label">Preparing</div></div>
+          <div class="step"><div class="step-dot">🚴</div><div class="step-label">On the Way</div></div>
+          <div class="step"><div class="step-dot">🏠</div><div class="step-label">Delivered</div></div>
+        </div>
+        <div style="text-align:center;font-size:13px;color:var(--text-muted);margin-top:8px">Estimated delivery: <strong>25–35 minutes</strong></div>
+      </div>
+      <a href="index.html" class="btn-primary" style="display:inline-flex;margin-bottom:12px">Back to Home 🏠</a><br>
+      <a href="profile.html" style="font-size:13px;color:var(--primary);font-weight:600">View Order History →</a>
+    </div>`;
+            document.body.appendChild(overlay);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            DarkMode.init();
+            Cart.init();
+            Toast.init();
+            renderSummary();
+        });
+    </script>
+</body>
+
+</html>

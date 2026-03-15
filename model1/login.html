@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up — FoodByYupp</title>
+    <meta name="description" content="Login or create your FoodByYupp account to track orders and manage your profile.">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .form-error {
+            font-size: 12px;
+            color: var(--danger);
+            margin-top: 4px;
+            display: none;
+        }
+
+        .form-group.err .form-input {
+            border-color: var(--danger);
+        }
+
+        .form-group.err .form-error {
+            display: block;
+        }
+
+        .pw-wrap {
+            position: relative;
+        }
+
+        .pw-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Minimal Nav -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-logo">
+                <span class="nav-logo-icon">🍽️</span>
+                <span class="nav-logo-text">FoodByYupp</span>
+            </a>
+            <div style="flex:1"></div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link"><span class="icon">🏠</span><span>Home</span></a>
+                <button class="dark-toggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="auth-page">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <span class="auth-logo-icon">🍽️</span>
+                <span class="auth-logo-text">FoodByYupp</span>
+                <p style="font-size:14px;color:var(--text-muted);margin-top:6px">Your favourite food, delivered fast 🚀
+                </p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Login</div>
+                <div class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</div>
+            </div>
+
+            <!-- Login Form -->
+            <form class="auth-form active" id="form-login" onsubmit="doLogin(event)">
+                <div class="form-group" id="lg-email-group">
+                    <label class="form-label">Email Address</label>
+                    <input class="form-input" id="lg-email" type="email" placeholder="you@example.com"
+                        autocomplete="email">
+                    <span class="form-error">Please enter a valid email.</span>
+                </div>
+                <div class="form-group" id="lg-pw-group">
+                    <label class="form-label">Password</label>
+                    <div class="pw-wrap">
+                        <input class="form-input" id="lg-pw" type="password" placeholder="••••••••"
+                            autocomplete="current-password" style="width:100%;padding-right:40px">
+                        <span class="pw-toggle" onclick="togglePw('lg-pw',this)">👁️</span>
+                    </div>
+                    <span class="form-error">Password must be at least 6 characters.</span>
+                </div>
+                <div style="display:flex;justify-content:flex-end;margin-top:-8px">
+                    <a href="#" style="font-size:13px;color:var(--primary);font-weight:600">Forgot password?</a>
+                </div>
+                <button type="submit" class="auth-btn">Login →</button>
+                <div class="auth-divider">or continue with</div>
+                <div class="social-btns">
+                    <button type="button" class="social-btn" onclick="socialLogin('Google')">🌐 Google</button>
+                    <button type="button" class="social-btn" onclick="socialLogin('Facebook')">📘 Facebook</button>
+                </div>
+                <p style="font-size:13px;text-align:center;color:var(--text-muted)">Don't have an account? <a
+                        onclick="switchTab('signup')" style="color:var(--primary);font-weight:600;cursor:pointer">Sign
+                        up</a></p>
+            </form>
+
+            <!-- Signup Form -->
+            <form class="auth-form" id="form-signup" onsubmit="doSignup(event)">
+                <div class="form-group" id="sg-name-group">
+                    <label class="form-label">Full Name</label>
+                    <input class="form-input" id="sg-name" type="text" placeholder="John Doe" autocomplete="name">
+                    <span class="form-error">Name must be at least 2 characters.</span>
+                </div>
+                <div class="form-group" id="sg-email-group">
+                    <label class="form-label">Email Address</label>
+                    <input class="form-input" id="sg-email" type="email" placeholder="you@example.com"
+                        autocomplete="email">
+                    <span class="form-error">Please enter a valid email.</span>
+                </div>
+                <div class="form-group" id="sg-phone-group">
+                    <label class="form-label">Phone Number</label>
+                    <input class="form-input" id="sg-phone" type="tel" placeholder="+91 98765 43210" autocomplete="tel">
+                    <span class="form-error">Enter a valid 10-digit phone number.</span>
+                </div>
+                <div class="form-group" id="sg-pw-group">
+                    <label class="form-label">Password</label>
+                    <div class="pw-wrap">
+                        <input class="form-input" id="sg-pw" type="password" placeholder="Min. 6 characters"
+                            autocomplete="new-password" style="width:100%;padding-right:40px">
+                        <span class="pw-toggle" onclick="togglePw('sg-pw',this)">👁️</span>
+                    </div>
+                    <span class="form-error">Password must be at least 6 characters.</span>
+                </div>
+                <button type="submit" class="auth-btn">Create Account 🎉</button>
+                <div class="auth-divider">or continue with</div>
+                <div class="social-btns">
+                    <button type="button" class="social-btn" onclick="socialLogin('Google')">🌐 Google</button>
+                    <button type="button" class="social-btn" onclick="socialLogin('Facebook')">📘 Facebook</button>
+                </div>
+                <p style="font-size:13px;text-align:center;color:var(--text-muted)">Already have an account? <a
+                        onclick="switchTab('login')"
+                        style="color:var(--primary);font-weight:600;cursor:pointer">Login</a></p>
+            </form>
+        </div>
+    </main>
+
+    <script src="js/data.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        const USER_KEY = 'foodbyYupp_user';
+
+        function switchTab(tab) {
+            document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+            document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
+            document.getElementById('form-login').classList.toggle('active', tab === 'login');
+            document.getElementById('form-signup').classList.toggle('active', tab === 'signup');
+        }
+
+        function togglePw(id, btn) {
+            const inp = document.getElementById(id);
+            if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+            else { inp.type = 'password'; btn.textContent = '👁️'; }
+        }
+
+        function setErr(groupId, show) {
+            document.getElementById(groupId).classList.toggle('err', show);
+        }
+
+        function doLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('lg-email').value.trim();
+            const pw = document.getElementById('lg-pw').value;
+            let ok = true;
+            const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            setErr('lg-email-group', !emailOk); if (!emailOk) ok = false;
+            setErr('lg-pw-group', pw.length < 6); if (pw.length < 6) ok = false;
+            if (!ok) return;
+
+            const user = JSON.parse(localStorage.getItem(USER_KEY) || '{}');
+            if (user.email === email) {
+                Toast.show('Welcome back, ' + user.name + '! 🎉', 'success');
+                setTimeout(() => window.location.href = 'profile.html', 1200);
+            } else {
+                Toast.show('Account not found. Please sign up!', 'error');
+                setTimeout(() => switchTab('signup'), 1500);
+            }
+        }
+
+        function doSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('sg-name').value.trim();
+            const email = document.getElementById('sg-email').value.trim();
+            const phone = document.getElementById('sg-phone').value.trim();
+            const pw = document.getElementById('sg-pw').value;
+            let ok = true;
+            const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            const phoneOk = /^\+?[\d\s-]{10,}$/.test(phone);
+            setErr('sg-name-group', name.length < 2); if (name.length < 2) ok = false;
+            setErr('sg-email-group', !emailOk); if (!emailOk) ok = false;
+            setErr('sg-phone-group', !phoneOk); if (!phoneOk) ok = false;
+            setErr('sg-pw-group', pw.length < 6); if (pw.length < 6) ok = false;
+            if (!ok) return;
+
+            const user = { name, email, phone, joined: new Date().toLocaleDateString('en-IN') };
+            localStorage.setItem(USER_KEY, JSON.stringify(user));
+            Toast.show('Account created! Welcome, ' + name + ' 🎉', 'success');
+            setTimeout(() => window.location.href = 'profile.html', 1200);
+        }
+
+        function socialLogin(provider) {
+            Toast.show(provider + ' login coming soon!', 'info');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            DarkMode.init();
+            Cart.init();
+            Toast.init();
+            // If already logged in, show hint
+            const user = JSON.parse(localStorage.getItem(USER_KEY) || '{}');
+            if (user.email) {
+                document.getElementById('lg-email').value = user.email;
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart — FoodByYupp</title>
+    <meta name="description" content="Review your cart before checkout. Adjust quantities, apply coupons and order.">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍽️</text></svg>">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-logo">
+                <span class="nav-logo-icon">🍽️</span>
+                <span class="nav-logo-text">FoodByYupp</span>
+            </a>
+            <div style="flex:1"></div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link"><span class="icon">🏠</span><span>Home</span></a>
+                <a href="menu.html" class="nav-link"><span class="icon">🍴</span><span>Menu</span></a>
+                <a href="profile.html" class="nav-link"><span class="icon">👤</span><span>Profile</span></a>
+                <button class="dark-toggle">🌙</button>
+                <a href="cart.html" class="cart-btn active">
+                    <span>🛒</span><span>Cart</span>
+                    <span class="cart-badge" style="display:none">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- PAGE -->
+    <main class="page-wrap">
+        <div class="container">
+            <h1 class="page-title">🛒 Your Cart</h1>
+            <div class="cart-layout" id="cart-layout">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border-top:none">
+                <span>© 2026 FoodByYupp. All rights reserved.</span>
+                <span>Made with ❤️</span>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        /* ── Cart Page Logic ──────────────────────────────────────── */
+        let activeCoupon = null;
+
+        function fmt(n) { return '₹' + n.toLocaleString('en-IN'); }
+
+        function renderCart() {
+            DarkMode.init();
+            Cart.init();
+
+            const items = Cart.getAll();
+            const layout = document.getElementById('cart-layout');
+
+            if (items.length === 0) {
+                layout.innerHTML = `
+      <div class="empty-cart" style="grid-column:1/-1">
+        <div class="empty-icon">🛒</div>
+        <div class="empty-title">Your cart is empty!</div>
+        <div class="empty-sub">Looks like you haven't added anything yet.</div>
+        <a href="menu.html" class="btn-primary" style="display:inline-flex;margin-top:0">Browse Menu 🍔</a>
+      </div>`;
+                return;
+            }
+
+            const itemsHTML = items.map(item => `
+    <div class="cart-item" data-id="${item.id}">
+      <img class="cart-item-img" src="${item.image}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=200&q=70'">
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-rest">🏪 ${item.restaurant}</div>
+        <div class="cart-item-foot">
+          <div class="qty-control">
+            <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
+            <span class="qty-num">${item.qty}</span>
+            <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
+          </div>
+          <span class="cart-item-price">${fmt(item.price * item.qty)}</span>
+          <button class="remove-btn" onclick="removeItem(${item.id})">🗑 Remove</button>
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--text-muted);text-align:right;flex-shrink:0">
+        ${fmt(item.price)} × ${item.qty}
+      </div>
+    </div>`).join('');
+
+            const disc = Cart.discount(activeCoupon);
+            const total = Cart.total(activeCoupon);
+            const del = Cart.delivery();
+
+            layout.innerHTML = `
+    <div class="cart-items">${itemsHTML}</div>
+    <div>
+      <div class="order-summary">
+        <div class="summary-title">💳 Order Summary</div>
+        <div class="summary-row"><span>Subtotal</span><span>${fmt(Cart.subtotal())}</span></div>
+        <div class="summary-row"><span>Delivery fee</span><span>${del === 0 ? '<span style="color:var(--accent)">FREE</span>' : fmt(del)}</span></div>
+        <div class="summary-row"><span>GST (5%)</span><span>${fmt(Cart.tax())}</span></div>
+        ${disc > 0 ? `<div class="summary-row discount"><span>Coupon discount</span><span>− ${fmt(disc)}</span></div>` : ''}
+        <div class="summary-row total"><span>Total</span><span style="color:var(--primary)">${fmt(total)}</span></div>
+        <div class="coupon-wrap">
+          <input class="coupon-input" id="coupon-input" type="text" placeholder="Enter coupon code" value="${activeCoupon ? Object.keys(COUPON_CODES).find(k => COUPON_CODES[k] === activeCoupon) || '' : ''}">
+          <button class="coupon-btn" onclick="applyCoupon()">Apply</button>
+        </div>
+        ${activeCoupon ? `<div style="font-size:12px;color:var(--accent);margin-bottom:8px">✅ Coupon applied: ${activeCoupon.label}</div>` : ''}
+        ${del === 0 && Cart.subtotal() > 0 ? '<div style="font-size:12px;color:var(--accent);margin-bottom:8px">🎉 Free delivery on this order!</div>' : (Cart.subtotal() > 0 ? `<div style="font-size:12px;color:var(--text-muted);margin-bottom:8px">Add ${fmt(299 - Cart.subtotal())} more for free delivery</div>` : '')}
+        <a href="checkout.html"><button class="checkout-btn">Proceed to Checkout →</button></a>
+        <a href="menu.html" style="display:block;text-align:center;margin-top:12px;font-size:13px;color:var(--primary);font-weight:600">+ Add more items</a>
+      </div>
+      <div style="margin-top:16px;background:var(--surface);border-radius:var(--radius-md);border:1px solid var(--border);padding:16px;font-size:13px;">
+        <div style="font-weight:700;margin-bottom:10px">🏷️ Available Coupons</div>
+        ${Object.entries(COUPON_CODES).map(([code, data]) => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--border)">
+            <div>
+              <span style="font-weight:700;color:var(--primary);background:var(--primary-light);padding:2px 8px;border-radius:4px;font-size:12px">${code}</span>
+              <span style="color:var(--text-muted);margin-left:8px;font-size:12px">${data.label}</span>
+            </div>
+            <button onclick="applyCode('${code}')" style="color:var(--primary);font-weight:700;font-size:12px;cursor:pointer">Apply</button>
+          </div>`).join('')}
+      </div>
+    </div>`;
+        }
+
+        function changeQty(id, delta) {
+            if (delta > 0) Cart.incrementQty(id); else Cart.decrementQty(id);
+            renderCart();
+        }
+
+        function removeItem(id) {
+            Cart.remove(id);
+            Toast.show('Item removed from cart', 'info');
+            renderCart();
+        }
+
+        function applyCoupon() {
+            const code = (document.getElementById('coupon-input')?.value || '').trim().toUpperCase();
+            applyCode(code);
+        }
+
+        function applyCode(code) {
+            if (COUPON_CODES[code]) {
+                activeCoupon = COUPON_CODES[code];
+                Toast.show('Coupon applied! ' + activeCoupon.label, 'success');
+            } else {
+                activeCoupon = null;
+                Toast.show('Invalid coupon code', 'error');
+            }
+            renderCart();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            Toast.init();
+            renderCart();
+        });
+    </script>
+</body>
+
+</html>
