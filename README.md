@@ -278,6 +278,19 @@ This project helped in understanding:
 
 ---
 
+## 🌐 Live Demo
+
+🔗 **GitHub Pages**  
+https://rooprc.github.io/FoodPack/
+
+🔗 **Netlify Deployment**  
+https://foodpackwebsite.netlify.app/
+
+🔗 **Vercel Deployment**  
+https://food-pack.vercel.app/
+
+---
+
 ## **👩‍💻 Author**
 
 **Roopa Chinchewadi**  
