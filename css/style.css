@@ -630,3 +630,54 @@ input, select, textarea { font-family: inherit; }
   }
 
 }
+
+/* MOBILE NAV DROPDOWN */
+
+@media (max-width:768px){
+
+  .nav-links{
+    display:none;
+    flex-direction:column;
+    position:absolute;
+    top:70px;
+    left:0;
+    width:100%;
+    padding:20px;
+    background:#ffffff;
+    z-index:1000;
+  }
+
+  /* show menu when active */
+  .nav-links.active{
+    display:flex;
+  }
+
+  /* hide icons in mobile */
+  .nav-links .icon{
+    display:none;
+  }
+
+  /* text style */
+  .nav-links a,
+  .nav-links button{
+    font-size:18px;
+    font-weight:500;
+    padding:12px 0;
+    color:#222;
+    text-decoration:none;
+    border-bottom:1px solid #eee;
+  }
+
+}
+
+/* DARK MODE MENU */
+
+body.dark .nav-links{
+  background:#1e1e1e;
+}
+
+body.dark .nav-links a,
+body.dark .nav-links button{
+  color:#ffffff;
+  border-bottom:1px solid #333;
+}
